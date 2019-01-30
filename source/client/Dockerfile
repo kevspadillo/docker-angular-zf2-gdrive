@@ -10,7 +10,7 @@ RUN sed -ie '$ a Include /usr/local/apache2/conf/000-upload-client.conf' /usr/lo
 RUN sed -ie 's/#LoadModule rewrite_module/LoadModule rewrite_module/g' /usr/local/apache2/conf/httpd.conf 
 
 # Copy Apache vhost configuration
-COPY ./build_config/apache/000-upload-client.conf /usr/local/apache2/conf/000-upload-client.conf
+COPY ./build_config/httpd/000-upload-client.conf /usr/local/apache2/conf/000-upload-client.conf
 
 # Copy in source files, which we need if we are doing a
 # bundled (non-local) build
