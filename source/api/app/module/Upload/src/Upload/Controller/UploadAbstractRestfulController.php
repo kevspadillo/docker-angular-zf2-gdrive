@@ -1,4 +1,9 @@
 <?php
+/**
+ * UploadController
+ *
+ * @package Upload\Controller
+ */
 namespace Upload\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
