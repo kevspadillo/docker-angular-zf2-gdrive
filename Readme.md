@@ -1,4 +1,4 @@
-# Dockerize Angular and Zend Framework 2 Google Drive Uploader
+# Dockerize Angular and ZF2 Rest API for Google Drive Uploader
 
 Simple file uploader to Google Drive build on top of Docker using Angular as client application and Zend Framework 2 as REST API.
 
