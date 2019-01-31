@@ -15,28 +15,64 @@ export class GoogleUploadComponent {
 
     // Flag to display filename in input form
     isFileChosen:boolean = false;
+
+    // Errors
+    errors:any = [];
+
+    // Success message
+    success:string = null;
+
+    uploading:boolean = false;
     
     // Filename to display
-    fileName: string = '';
+    fileName:string = '';
+
+    // Uploaded file
+    uploadedFile:File;
 
     constructor(public GoogleUploadService: GoogleUploadService) {}
 
     // On change of file, set file for upload and filename for display
     onFilesAdded() {
-        const files: { [key: string]: File } = this.file.nativeElement.files;
-        this.file = files[0];
 
-        if (this.file.length > 0){
-          this.isFileChosen = true;
+        if (this.file.nativeElement.files.length > 0){
+            const files: { [key: string]: File } = this.file.nativeElement.files;
+            this.uploadedFile = files[0];
+            this.isFileChosen = true;
         }        
-        this.fileName = this.file.name;
+        this.fileName = this.uploadedFile.name;
     }
 
     uploadFile() {
-        this.GoogleUploadService.uploadFile(this.username.nativeElement.value, this.file)
-            .subscribe(event => {
-                console.log(event);
-            }
+
+        if (this.username.nativeElement.value == '' || this.uploadedFile == undefined) {
+            this.errors.push("All fields are required for upload.");
+            return false;
+        }
+
+        this.uploading = true;
+        this.errors    = []
+        this.GoogleUploadService.uploadFile(this.username.nativeElement.value, this.uploadedFile)
+            .subscribe(
+                event => {
+                    if (event.type == 4) {
+                        this.success = "File Successfully Uploaded";
+                        this.uploading                    = false;
+                        this.file.nativeElement.file      = null;
+                        this.username.nativeElement.value = null;
+                        this.errors                       = [];
+                        this.fileName                     = null;
+                    }
+                },
+                error => {
+
+                    this.uploading = false;
+                    for (let key in error.error.message) {
+                        for(let msg in error.error.message[key]) {
+                            this.errors.push(error.error.message[key][msg]);
+                        }
+                    }
+                }
         );
     }
 }

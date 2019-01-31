@@ -12,13 +12,13 @@
             <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-sm">Enter Your Name</span>
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Enter Your Name*</span>
                     </div>
                     <input type="text" class="form-control" aria-label="Username" #username aria-describedby="inputGroup-sizing-sm">
                 </div>
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroupFileAddon01">Select PDF File</span>
+                        <span class="input-group-text" id="inputGroupFileAddon01">Select PDF File*</span>
                     </div>
                     <div class="custom-file">
                         <input type="file" class="custom-file-input" id="inputGroupFile01" #file (change)="onFilesAdded()">
@@ -29,7 +29,17 @@
             </div>
         </div>
         <small class="d-block text-right mt-3">
-            <button type="button" class="btn btn-primary btn-sm" (click)="uploadFile()">Upload To Google Drive</button>
+            <button type="button" [disabled]="uploading" class="btn btn-primary btn-sm" (click)="uploadFile()">
+                <span *ngIf="!uploading">Upload To Google Drive</span>
+                <span *ngIf="uploading">Uploading</span>
+            </button>
         </small>
+    </div>
+
+    <div class="alert alert-danger" role="alert" *ngFor="let error of errors">
+        {{error}}
+    </div>
+    <div class="alert alert-success" role="alert" *ngIf="success">
+        {{success}}
     </div>
 </div>
