@@ -1,2 +1,35 @@
-<input type="file" #file (change)="onFilesAdded()" />
-<button (click)="uploadFile()">Upload</button>
+<div class="container mt-10">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-dark rounded shadow-sm">
+        <div class="lh-100">
+            <h6 class="mb-0 text-white lh-100">Dockerize Angular and Zend Framework 2 for Google Drive</h6>
+            <small>by Kevin A. Padilla</small>
+        </div>
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+        <h6 class="border-bottom border-gray pb-2 mb-0">Upload File</h6>
+        <div class="media text-muted pt-3">
+            <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Enter Your Name</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Username" #username aria-describedby="inputGroup-sizing-sm">
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupFileAddon01">Select PDF File</span>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="inputGroupFile01" #file (change)="onFilesAdded()">
+                        <label class="custom-file-label" for="inputGroupFile01" *ngIf=!isFileChosen></label>
+                        <label class="custom-file-label" for="inputGroupFile01" *ngIf=isFileChosen>{{fileName}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <small class="d-block text-right mt-3">
+            <button type="button" class="btn btn-primary btn-sm" (click)="uploadFile()">Upload To Google Drive</button>
+        </small>
+    </div>
+</div>

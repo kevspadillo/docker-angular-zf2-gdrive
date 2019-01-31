@@ -9,24 +9,16 @@ const url = 'http://uploader-test.local:8080/api/upload';
 export class GoogleUploadService {
     constructor(private http: HttpClient) {}
 
-  public uploadFile(file: File): { [key: string]: Observable<number> } {
+    public uploadFile(username : string, file: File) {
 
-      const formData: FormData = new FormData();
-      formData.append('file', file, file.name);
+        const formData: FormData = new FormData();
+        formData.append('file', file, file.name);
+        formData.append('username', username);
 
-      // create a http-post request and pass the form
-      // tell it to report the upload progress
-      const request = new HttpRequest('POST', url, formData);
+        // create a http-post request and pass the form
+        const request = new HttpRequest('POST', url, formData);
 
-      // create a new progress-subject for every file
-      const progress = new Subject<number>();
-
-      // send the http-request and subscribe for progress-updates
-      this.http.request(request).subscribe(event => {
-            console.log(event);
-      });
-
-    // return the map of progress.observables
-    return {};
-  }
+        // send the http-request and subscribe for progress-updates
+        return this.http.request(request);
+    }
 }
