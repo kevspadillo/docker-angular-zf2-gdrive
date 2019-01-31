@@ -11,5 +11,13 @@
         "php": ">=5.3.3",
         "zendframework/zendframework": "2.2.*",
         "google/apiclient": "^2.0"
+    },
+    "autoload": {
+        "classmap": [
+            "config"
+        ]
+    },
+    "scripts": {
+        "generate-google-token": "Api\\GenerateGoogleToken::generate"
     }
 }
