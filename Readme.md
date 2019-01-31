@@ -79,7 +79,7 @@ docker-compose up
 ```
 This will build our docker container that our client and server application will be using to run without the ``ng serve`` and `` php -S 0.0.0.0:8080 -t public/ public/index.php``` commands.
 
-While waiting, grab a cup of coffee and watch the magic behind our application. :wink:
+While waiting, grab a cup of coffee and watch the magic building our application. :wink:
 
 Once done with the build, lets update our host files. Located in ``C:\Windows\System32\drivers\etc`` for Windows.
 ```
