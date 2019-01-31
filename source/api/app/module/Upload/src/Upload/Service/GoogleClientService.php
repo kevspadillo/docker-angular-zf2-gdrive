@@ -10,19 +10,37 @@ namespace Upload\Service;
 
 use Google_Client as GoogleClient;
 use Google_Service_Drive as GoogleServiceDrive;
+use Google_Service_Drive_DriveFile as GoogleServiceDriveFile;
 
 class GoogleClientService 
 {
     private $Client;
+    private $ServiceDrive;
+    private $ServiceDriveFile;
 
+    private $mimeTypeFolder = 'application/vnd.google-apps.folder';
+    private $mimeTypePdf    = 'application/pdf';
+
+    /**
+     * @param GoogleClient           $Client
+     * @param GoogleServiceDriveFile $ServiceDriveFile
+     * @param string                 $tokenPath
+     */
     public function __construct(
         GoogleClient $Client,
+        GoogleServiceDriveFile $ServiceDriveFile,
         $tokenPath
     ) {
-        $this->Client = $Client;
-        $this->tokenPath = $tokenPath;
+        $this->Client           = $Client;
+        $this->ServiceDriveFile = $ServiceDriveFile;
+        $this->tokenPath        = $tokenPath;
     }
 
+    /**
+     * Set google service 
+     *
+     * @return void
+     */
     public function setGoogleService()
     {
         if (file_exists($this->tokenPath)) {
@@ -58,9 +76,14 @@ class GoogleClientService
             file_put_contents($this->tokenPath, json_encode($this->Client->getAccessToken()));
         }
 
-        return new GoogleServiceDrive($this->Client);
+        $this->ServiceDrive = new GoogleServiceDrive($this->Client);
     }
 
+    /**
+     * Refresh token
+     * 
+     * @return void
+     */
     public function refreshToken()
     {
         if (file_exists($this->tokenPath)) {
@@ -70,6 +93,77 @@ class GoogleClientService
             $newAccessToken = $this->Client->refreshToken($accessToken['refresh_token']);
             print_r($newAccessToken);
         }
+    }
+
+    /**
+     * Checks if file exists
+     * 
+     * @param  $filename
+     * @param  $parentFileId
+     * @return boolean
+     */
+    public function folderExists($filename, string $parentFileId = null)
+    {
+        $query = sprintf("mimeType='application/vnd.google-apps.folder' and name='%s'", $filename) ;
+
+        if (!empty($parentFileId)) {
+            $query .= sprintf(" and '%s' in parents", $parentFileId);
+        }
+
+        $optParams = array(
+            'q'        => $query,
+            'mimeType' => $this->mimeTypeFolder,
+        );
+
+        $results = $this->ServiceDrive->files->listFiles($optParams);
         
+        $files = $results->getFiles();
+
+        return (count($files)) ? $files[0]->id : 0;
+    }
+
+    /**
+     * Create folder
+     * 
+     * @param  string $foldername
+     * @param  array  $parenFolders
+     * @return string
+     */
+    public function createFolder($foldername, array $parenFolders = [])
+    {
+        $this->ServiceDriveFile->setName($foldername);
+        $this->ServiceDriveFile->setMimeType($this->mimeTypeFolder);
+
+        if (count($parenFolders)) {
+            $this->ServiceDriveFile->setParents($parenFolders);
+        }
+
+        $folder = $this->ServiceDrive->files->create($this->ServiceDriveFile, array('fields' => 'id'));
+
+        return $folder->id;
+    }
+
+    /**
+     * Upload file
+     * 
+     * @param  array $fileData
+     * @param  array $parentFolderIds
+     * @return boolean
+     */
+    public function createFile($fileData, array $parentFolderIds = [])
+    {
+
+        $this->ServiceDriveFile->setName($fileData['name']);
+        $this->ServiceDriveFile->setParents($parentFolderIds);
+
+        $content = file_get_contents($fileData['tmp_name']);
+        $file = $this->ServiceDrive->files->create($this->ServiceDriveFile, [
+            'data'       => $content,
+            'mimeType'   => $this->mimeTypePdf,
+            'uploadType' => 'multipart',
+            'fields'     => 'id'
+        ]);
+
+        return ($file ? true : false);
     }
 }

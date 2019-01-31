@@ -9,7 +9,8 @@ namespace Upload\Controller;
 use Upload\Controller\UploadAbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
-use Google_Service_Drive_DriveFile as GoogleDriveService;
+use Google_Service_Drive_DriveFile as GoogleDriveFileService;
+use Google_Service_Drive as GoogleDriveService;
 
 class UploadController extends UploadAbstractRestfulController
 {
@@ -21,39 +22,36 @@ class UploadController extends UploadAbstractRestfulController
      */
     public function create($uploadData)
     {   
-
         $request = $this->getRequest();
         $file = $request->getFiles()->toArray();
 
+        // Add Filter
+
         $GoogleClientService = $this->getServiceLocator()->get('Upload\Service\GoogleClientService');
-        $GoogleClientService->refreshToken();
+        
+        // Add refresh token as middleware
+        // $GoogleClientService->refreshToken();
 
-        exit;
-
-
-        $service = $GoogleClientService->setGoogleService();
+        $GoogleClientService->setGoogleService();
 
         try {
 
-            $fileMetadata = new GoogleDriveService(array(
-                'name' => 'TestPhp',
-                'mimeType' => 'application/vnd.google-apps.folder'));
-            $folder = $service->files->create($fileMetadata, array(
-                'fields' => 'id'));
+            // Check for parent folder and get folder id, 
+            $parentFileId = $GoogleClientService->folderExists('TestPhp');
+            if (!$parentFileId) {
+                // if folder does not exists create
+                $parentFileId = $GoogleClientService->createFolder('TestPhp');
+            }
 
-            $fileMetadata = new GoogleDriveService(
-                [
-                    'name'    => $file['file']['name'],
-                    'parents' => array($folder->id)
-                ]
-            );
-            $content = file_get_contents($file['file']['tmp_name']);
-            $file = $service->files->create($fileMetadata, [
-                'data'       => $content,
-                'mimeType'   => 'image/jpeg',
-                'uploadType' => 'multipart',
-                'fields'     => 'id'
-            ]);
+            // Check for user folder and get user folder id
+            $userFolderId = $GoogleClientService->folderExists($uploadData['username'], $parentFileId);
+            if (!$userFolderId) {
+                // if folder does not exists create
+                $userFolderId = $GoogleClientService->createFolder($uploadData['username'], [$parentFileId]);
+            }
+
+            // Upload file under the user folder id
+            $GoogleClientService->createFile($file['file'], [$userFolderId]);
 
             return new JsonModel(['message' => 'File Successfully Uploaded']);
 
@@ -64,7 +62,6 @@ class UploadController extends UploadAbstractRestfulController
                 'error'   => 'Oops! Something went wrong',
                 'message' => $e->getMessage()
             ]);
-
         }
     }
 }

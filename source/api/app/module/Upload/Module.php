@@ -15,6 +15,7 @@ use Upload\Service\GoogleClientService;
 
 use Google_Client as GoogleClient;
 use Google_Service_Drive as GoogleServiceDrive;
+use Google_Service_Drive_DriveFile as GoogleDriveFileService;
 
 class Module
 {
@@ -85,7 +86,9 @@ class Module
                     $client->setAuthConfig($config['google_drive']['credentials']);
                     $client->addScope($config['google_drive']['scope']);
 
-                    return new GoogleClientService($client, $config['google_drive']['token']);
+                    $drive = new GoogleDriveFileService();
+
+                    return new GoogleClientService($client, $drive, $config['google_drive']['token']);
                 },
             ]
         ];
