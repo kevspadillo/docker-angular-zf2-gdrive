@@ -8,6 +8,7 @@ namespace Upload\Controller;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\Http\Response;
+use Zend\View\Model\JsonModel;
 
 class UploadAbstractRestfulController extends AbstractRestfulController
 {
@@ -15,6 +16,12 @@ class UploadAbstractRestfulController extends AbstractRestfulController
     {
         $this->response->setStatusCode(405);
         throw new \Exception('Method Not Allowed');
+    }
+
+    public function validationError($message)
+    {
+        $this->response->setStatusCode(409);
+        return new JsonModel(['message' => $message]);
     }
     
     # Override default actions as they do not return valid JsonModels

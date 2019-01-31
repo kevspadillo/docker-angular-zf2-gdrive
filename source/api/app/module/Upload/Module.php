@@ -12,6 +12,7 @@ use Zend\Mvc\MvcEvent;
 use Zend\View\Model\JsonModel;
 
 use Upload\Service\GoogleClientService;
+use Upload\Filter\UploadFilter;
 
 use Google_Client as GoogleClient;
 use Google_Service_Drive as GoogleServiceDrive;
@@ -82,13 +83,16 @@ class Module
 
                     $config = $sm->get('Config');
 
+                    $drive = new GoogleDriveFileService();
                     $client = new GoogleClient();
                     $client->setAuthConfig($config['google_drive']['credentials']);
                     $client->addScope($config['google_drive']['scope']);
 
-                    $drive = new GoogleDriveFileService();
+                    return new GoogleClientService($client, $config['google_drive']['token']);
+                },
 
-                    return new GoogleClientService($client, $drive, $config['google_drive']['token']);
+                'Upload\Filter\UploadFilter' => function() {
+                    return new UploadFilter();
                 },
             ]
         ];

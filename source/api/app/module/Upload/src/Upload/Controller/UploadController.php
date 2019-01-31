@@ -15,6 +15,16 @@ use Google_Service_Drive as GoogleDriveService;
 class UploadController extends UploadAbstractRestfulController
 {
     /**
+     * Somethig to enjoy with
+     * 
+     * @return JsonModel
+     */
+    public function getList()
+    {
+        return new JsonModel(['message' => "Hoooraay! It Works!"]);
+    }
+
+    /**
      * Api to upload files
      * 
      * @param  $uploadData
@@ -25,12 +35,15 @@ class UploadController extends UploadAbstractRestfulController
         $request = $this->getRequest();
         $file = $request->getFiles()->toArray();
 
-        // Add Filter
-
         $GoogleClientService = $this->getServiceLocator()->get('Upload\Service\GoogleClientService');
-        
-        // Add refresh token as middleware
-        // $GoogleClientService->refreshToken();
+        $UploadFilter        = $this->getServiceLocator()->get('Upload\Filter\UploadFilter');
+
+        $uploadData['file'] = $file['file'];
+
+        $UploadFilter->setData($uploadData);
+        if (!$UploadFilter->isValid()) {
+             return $this->validationError($UploadFilter->getMessages());
+        }
 
         try {
 

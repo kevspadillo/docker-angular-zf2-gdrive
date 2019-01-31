@@ -28,7 +28,6 @@ class GoogleClientService
      */
     public function __construct(
         GoogleClient $Client,
-        GoogleServiceDriveFile $ServiceDriveFile,
         $tokenPath
     ) {
         $this->Client           = $Client;
