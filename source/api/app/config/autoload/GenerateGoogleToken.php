@@ -18,7 +18,7 @@ class GenerateGoogleToken
     public static function generate(Event $event) 
     {
         // Locate config file for Google CLient necessary parameters
-        $config = include __DIR__ . '/google-api.php';
+        $config = include __DIR__ . '/local.php';
 
         $client = new Google_Client();
         $client->setApplicationName('Google Drive API PHP');

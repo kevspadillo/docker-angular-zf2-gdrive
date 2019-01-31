@@ -70,6 +70,19 @@ class UploadFilter extends InputFilter
                             return !empty($value['tmp_name']);
                         }
                     ]
+                ],
+                [
+                    'name'  => 'Callback',
+                    'options'=> [
+                        'messages' => [
+                            Callback::INVALID_VALUE => 'Invalid File Type, PDF only.'
+                        ],
+                        'callback' => function ($value, $context=[]) {
+                            $typeArray = explode('/', $value['type']);
+                            $type      = $typeArray[1];
+                            return (strtoupper($type) == 'PDF');
+                        }
+                    ]
                 ]
             ],
         ]);

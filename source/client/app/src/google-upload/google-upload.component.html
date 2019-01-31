@@ -21,7 +21,7 @@
                         <span class="input-group-text" id="inputGroupFileAddon01">Select PDF File*</span>
                     </div>
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="inputGroupFile01" #file (change)="onFilesAdded()">
+                        <input accept="application/pdf" type="file" class="custom-file-input" id="inputGroupFile01" #file (change)="onFilesAdded()">
                         <label class="custom-file-label" for="inputGroupFile01" *ngIf=!isFileChosen></label>
                         <label class="custom-file-label" for="inputGroupFile01" *ngIf=isFileChosen>{{fileName}}</label>
                     </div>
