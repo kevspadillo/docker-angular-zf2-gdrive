@@ -3,7 +3,7 @@ import { HttpClient, HttpRequest, HttpEventType, HttpResponse } from '@angular/c
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
-const url = 'http://uploader-test.local:8080/api/upload';
+const url = 'http://uploader-api.local:8080/api/upload';
 
 @Injectable()
 export class GoogleUploadService {
