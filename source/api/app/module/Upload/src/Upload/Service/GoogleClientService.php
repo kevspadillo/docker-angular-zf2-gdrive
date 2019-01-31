@@ -32,8 +32,13 @@ class GoogleClientService
         $tokenPath
     ) {
         $this->Client           = $Client;
-        $this->ServiceDriveFile = $ServiceDriveFile;
         $this->tokenPath        = $tokenPath;
+        $this->setGoogleService();
+    }
+
+    private function resetDrive(array $params = [])
+    {
+        $this->ServiceDriveFile = new GoogleServiceDriveFile($params);
     }
 
     /**
@@ -104,6 +109,8 @@ class GoogleClientService
      */
     public function folderExists($filename, string $parentFileId = null)
     {
+        $this->resetDrive();
+
         $query = sprintf("mimeType='application/vnd.google-apps.folder' and name='%s'", $filename) ;
 
         if (!empty($parentFileId)) {
@@ -131,6 +138,8 @@ class GoogleClientService
      */
     public function createFolder($foldername, array $parenFolders = [])
     {
+        $this->resetDrive();
+
         $this->ServiceDriveFile->setName($foldername);
         $this->ServiceDriveFile->setMimeType($this->mimeTypeFolder);
 
@@ -152,6 +161,7 @@ class GoogleClientService
      */
     public function createFile($fileData, array $parentFolderIds = [])
     {
+        $this->resetDrive();
 
         $this->ServiceDriveFile->setName($fileData['name']);
         $this->ServiceDriveFile->setParents($parentFolderIds);
@@ -159,7 +169,7 @@ class GoogleClientService
         $content = file_get_contents($fileData['tmp_name']);
         $file = $this->ServiceDrive->files->create($this->ServiceDriveFile, [
             'data'       => $content,
-            'mimeType'   => $this->mimeTypePdf,
+            'mimeType'   => 'application/pdf',
             'uploadType' => 'multipart',
             'fields'     => 'id'
         ]);

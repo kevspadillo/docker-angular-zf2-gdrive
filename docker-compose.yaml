@@ -2,54 +2,53 @@ version: '3'
 
 # Declare services 
 services:
-    client:
-        build:
-            # Set client application context
-            context: ./source/client/
-            # Set client application dockerfile
-            dockerfile: ./Dockerfile
-        # Set build image and tagname
-        image: 'uploader-client:latest'
-        # Set client container name
-        container_name: uploader-client
-        # Set client application environment
-        # Change to value for other deployment such as production or staging 
-        environment:
-            APPLICATION_ENV: local
-        # Set network to be used
-        networks:
-            - local-uploader
-        # Set port listener
-        ports:
-            - '8081:80'
-        # Mount directories to container 
-        volumes:
-            - './source/client/app:/usr/src/app'
-    api:
-        build:
-            # Set api application context
-            context: ./source/api/
-            # Set api application dockerfile
-            dockerfile: ./Dockerfile
-        # Set build image and tagname
-        image: 'uploader-api:latest'
-        # Set client container name
-        container_name: uploader-api
-        # Set client application environment
-        # Change to value for other deployment such as production or staging 
-        environment:
-            APPLICATION_ENV: local
-        # Set network to be used
-        networks:
-            - local-uploader
-        # Set port listener
-        ports:
-            - '8080:80'
-        # Mount directories to container 
-        volumes:
-            - './source/api/app:/var/www/app'
-            
+  client:
+    build:
+      # Set client application context
+      context: ./source/client/
+      # Set client application dockerfile
+      dockerfile: ./Dockerfile
+    # Set build image and tagname
+    image: 'uploader-client:latest'
+    # Set client container name
+    container_name: uploader-client
+    # Set client application environment
+    # Change to value for other deployment such as production or staging 
+    environment:
+      APPLICATION_ENV: local
+    # Set network to be used
+    networks:
+      - local-uploader
+    # Set port listener
+    ports:
+      - '8081:80'
+    # Mount directories to container 
+    volumes:
+      - './source/client/app:/usr/src/app'
+  api:
+    build:
+      # Set api application context
+      context: ./source/api/
+      # Set api application dockerfile
+      dockerfile: ./Dockerfile
+    # Set build image and tagname
+    image: 'uploader-api:latest'
+    # Set client container name
+    container_name: uploader-api
+    # Set client application environment
+    # Change to value for other deployment such as production or staging 
+    environment:
+      APPLICATION_ENV: local
+    # Set network to be used
+    networks:
+      - local-uploader
+    # Set port listener
+    ports:
+      - '8080:80'
+    # Mount directories to container 
+    volumes:
+      - './source/api/app:/var/www/app'
 # Declare network driver 
 networks:
-    local-uploader:
-        driver: bridge
+  local-uploader:
+    driver: bridge

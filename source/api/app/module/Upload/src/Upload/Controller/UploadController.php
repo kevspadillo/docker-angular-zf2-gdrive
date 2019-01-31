@@ -32,8 +32,6 @@ class UploadController extends UploadAbstractRestfulController
         // Add refresh token as middleware
         // $GoogleClientService->refreshToken();
 
-        $GoogleClientService->setGoogleService();
-
         try {
 
             // Check for parent folder and get folder id, 
