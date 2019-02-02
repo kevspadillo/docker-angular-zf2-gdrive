@@ -12,6 +12,13 @@ RUN apt-get update \
 	&& curl -sS https://getcomposer.org/installer \
 	  | php -- --install-dir=/usr/local/bin --filename=composer
 
+RUN echo "file_uploads = On\n" \
+         "memory_limit = 500M\n" \
+         "upload_max_filesize = 500M\n" \
+         "post_max_size = 500M\n" \
+         "max_execution_time = 600\n" \
+         > /usr/local/etc/php/conf.d/uploads.ini
+
 # Copy Apache vhost configuration 
 COPY ./build_config/apache/000-upload-api.conf /etc/apache2/sites-available/000-upload-api.conf
 
